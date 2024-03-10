@@ -1,0 +1,13 @@
+*.cmd
+*.order
+*.log
+*.o
+*.o.d
+*.so
+*.ko
+*.order
+*.mod
+*.symvers
+*.mod.c
+.vscode
+venv

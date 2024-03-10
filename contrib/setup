@@ -1,0 +1,56 @@
+#!/usr/bin/bash
+set -e
+venv_dir="venv"
+
+install_apt_deps() {
+    $(which sudo) apt-get update
+    $(which sudo) apt install -y python3-venv
+    $(which sudo) apt install -y clang-format
+}
+
+install_venv_and_pip() {
+    if [ ! -d ${venv_dir} ]; then
+        python3 -m venv ${venv_dir}
+    fi
+    if [ ! -f ${venv_dir}/bin/pip ]; then
+        ${venv_dir}/bin/python3 -m ensurepip --upgrade
+    fi
+}
+
+install_pip_deps() {
+    pip_cmd=$(which pip)
+    if [ -d "${venv_dir}" ]; then
+        pip_cmd=${venv_dir}/bin/pip
+    fi
+
+    while read -r line; do
+        ${pip_cmd} install "${line}"
+    done < requirements.txt
+}
+
+install_precommit() {
+    pc_cmd=$(which pre-commit) || true
+
+    if [ -f "${venv_dir}/bin/pre-commit" ]; then
+        pc_cmd=${venv_dir}/bin/pre-commit
+    fi
+
+    if [ -n "${pc_cmd}" ]; then
+        ${pc_cmd} install
+    fi
+}
+
+# -- main -- #
+num=4
+
+echo "**(1/$num) Installing apt dependencies"
+install_apt_deps
+
+echo "**(2/$num) Installing virtual environment"
+install_venv_and_pip
+
+echo "**(3/$num) Installing pip dependencies"
+install_pip_deps
+
+echo "**(4/$num) Installing pre-commit hooks"
+install_precommit
