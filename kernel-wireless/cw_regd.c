@@ -19,8 +19,8 @@ void cw_prt_country_codes(void) {
             continue;
 
         wdev = dev->ieee80211_ptr;
-        pr_info("Device %s has country code %c%c\n", dev->name,
-                wdev->wiphy->regd->alpha2[0], wdev->wiphy->regd->alpha2[1]);
+        printk(KERN_INFO "REGD: Device %s has country code %c%c\n", dev->name,
+               wdev->wiphy->regd->alpha2[0], wdev->wiphy->regd->alpha2[1]);
     }
     rcu_read_unlock();
 }

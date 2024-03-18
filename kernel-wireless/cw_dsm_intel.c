@@ -4,11 +4,16 @@
 
 const guid_t guid_intel = GUID_INIT(0xF21202BF, 0x8F78, 0x4DC6, 0xA5, 0xB3,
                                     0x1F, 0x73, 0x8E, 0x28, 0x5A, 0xDE);
+extern int iwl_acpi_get_dsm_u32(struct acpi_device *adev, const guid_t *guid,
+                                u32 func, u32 *data);
 
 int cw_acpi_evaluate_dsm_intel(struct acpi_device *adev) {
     union acpi_object *obj;
     u64 value_u64 = 0;
     u32 value_u32 = 0;
+
+    if (iwl_acpi_get_dsm_u32(adev, &guid_intel, DSM_FUNC_ENABLE_6E, NULL) == 0)
+        return 0;
 
     /* check if the device has a _DSM method */
     if (!acpi_has_method(adev->handle, "_DSM")) {
